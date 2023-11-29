@@ -1,9 +1,9 @@
 // >>> 액션 타입
-const SET_LETTER = "letters/SET_LETTER";
-const ADD_LETTER = "letters/ADD_LETTER";
-const EDIT_LETTER = "letters/EDIT_LETTER";
-const DELETE_LETTER = "letters/DELETE_LETTER";
-const ON_EDIT_MODE = "letters/ON_EDIT_MODE";
+const SET_LETTER = 'letters/SET_LETTER';
+const ADD_LETTER = 'letters/ADD_LETTER';
+const EDIT_LETTER = 'letters/EDIT_LETTER';
+const DELETE_LETTER = 'letters/DELETE_LETTER';
+const ON_EDIT_MODE = 'letters/ON_EDIT_MODE';
 
 // >>> 액션 크리에이터
 export const setLetters = (payload) => {

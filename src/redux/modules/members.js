@@ -1,5 +1,5 @@
 // >>> 액션 타입
-const SET_SELECTED_MEMBER = "member/SET_SELECTED_MEMBER";
+const SET_SELECTED_MEMBER = 'members/SET_SELECTED_MEMBER';
 
 // >>> 액션 크리에이터
 export const setSelectedMember = (payload) => {
@@ -11,11 +11,11 @@ export const setSelectedMember = (payload) => {
 
 // >>> 초기값 정의
 const initialState = {
-  selectedMember: "이장원",
+  selectedMember: '이장원',
 };
 
 // >>> 리듀서 정의
-const member = (state = initialState, action) => {
+const members = (state = initialState, action) => {
   switch (action.type) {
     case SET_SELECTED_MEMBER:
       return {
@@ -26,4 +26,4 @@ const member = (state = initialState, action) => {
   }
 };
 
-export default member;
+export default members;

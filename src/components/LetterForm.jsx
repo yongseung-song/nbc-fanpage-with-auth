@@ -1,9 +1,8 @@
-
 import dayjs from 'dayjs';
 import { useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { addLetters } from 'redux/modules/letters';
-import { setSelectedMember } from 'redux/modules/member';
+import { setSelectedMember } from 'redux/modules/members';
 import styled from 'styled-components';
 import { v4 as uuid } from 'uuid';
 import defaultAvatar from '../assets/avatar.jpg';
@@ -13,88 +12,11 @@ const CONTENT_LIMIT = 100;
 const BORDER_COLOR = '#0008';
 const BACKGROUND_COLOR = '#feffd0bf';
 
-const StLetterFormContainer = styled.div`
-  min-width: 200px;
-  max-width: 520px;
-  width: 100%;
-  margin-bottom: 12px;
-  padding: 12px;
-  border: 1px solid ${BORDER_COLOR};
-  border-radius: 12px;
-  background-color: white;
-`;
-
-const StInputContainer = styled.div`
-  position: relative;
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-  width: 100%;
-  margin-bottom: 12px;
-  font-size: 0.8rem;
-  label {
-    padding-top: 6px;
-  }
-  input {
-    padding: 4px 2px;
-    border: 1px solid ${BORDER_COLOR};
-  }
-  textarea {
-    border: 1px solid ${BORDER_COLOR};
-  }
-  input:focus {
-    outline: none;
-    background-color: ${BACKGROUND_COLOR};
-  }
-  textarea:focus {
-    outline: none;
-    background-color: ${BACKGROUND_COLOR};
-  }
-`;
-
-const StSelectContainer = styled.div`
-  display: flex;
-  flex-direction: row;
-  gap: 12px;
-  margin-bottom: 12px;
-  label {
-    margin-top: 2px;
-  }
-`;
-
-const StBtnContainer = styled.div`
-  display: flex;
-  flex-direction: row;
-  justify-content: flex-end;
-`;
-
-const StSubmitBtn = styled.button`
-  cursor: pointer;
-  background-color: white;
-  text-align: center;
-  border: 1px solid ${BORDER_COLOR};
-  padding: 6px;
-  border-radius: 6px;
-  &:hover {
-    background-color: yellow;
-  }
-`;
-
-const StMaxLengthIndicator = styled.span`
-  display: block;
-  position: absolute;
-  bottom: 4px;
-  right: 4px;
-  font-size: 0.75rem;
-  text-align: right;
-  color: ${(props) => (props.$isMax ? '#aaa' : '#f00a')};
-`;
-
 function LetterForm() {
   const [textareaValue, setTextareaValue] = useState('');
   const [inputValue, setInputValue] = useState('');
   const letters = useSelector((state) => state.letters);
-  const member = useSelector((state) => state.member);
+  const member = useSelector((state) => state.members);
   const dispatch = useDispatch();
 
   const inputRef = useRef();
@@ -191,3 +113,79 @@ function LetterForm() {
 }
 
 export default LetterForm;
+const StLetterFormContainer = styled.div`
+  min-width: 200px;
+  max-width: 520px;
+  width: 100%;
+  margin-bottom: 12px;
+  padding: 12px;
+  border: 1px solid ${BORDER_COLOR};
+  border-radius: 12px;
+  background-color: white;
+`;
+
+const StInputContainer = styled.div`
+  position: relative;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  width: 100%;
+  margin-bottom: 12px;
+  font-size: 0.8rem;
+  label {
+    padding-top: 6px;
+  }
+  input {
+    padding: 4px 2px;
+    border: 1px solid ${BORDER_COLOR};
+  }
+  textarea {
+    border: 1px solid ${BORDER_COLOR};
+  }
+  input:focus {
+    outline: none;
+    background-color: ${BACKGROUND_COLOR};
+  }
+  textarea:focus {
+    outline: none;
+    background-color: ${BACKGROUND_COLOR};
+  }
+`;
+
+const StSelectContainer = styled.div`
+  display: flex;
+  flex-direction: row;
+  gap: 12px;
+  margin-bottom: 12px;
+  label {
+    margin-top: 2px;
+  }
+`;
+
+const StBtnContainer = styled.div`
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-end;
+`;
+
+const StSubmitBtn = styled.button`
+  cursor: pointer;
+  background-color: white;
+  text-align: center;
+  border: 1px solid ${BORDER_COLOR};
+  padding: 6px;
+  border-radius: 6px;
+  &:hover {
+    background-color: yellow;
+  }
+`;
+
+const StMaxLengthIndicator = styled.span`
+  display: block;
+  position: absolute;
+  bottom: 4px;
+  right: 4px;
+  font-size: 0.75rem;
+  text-align: right;
+  color: ${(props) => (props.$isMax ? '#aaa' : '#f00a')};
+`;

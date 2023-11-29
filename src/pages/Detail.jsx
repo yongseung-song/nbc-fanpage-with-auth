@@ -1,16 +1,15 @@
-import Footer from "components/Footer";
-import Header from "components/Header";
-import React, { useEffect, useRef, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
-import dayjs from "dayjs";
-import styled from "styled-components";
-import { useDispatch, useSelector } from "react-redux";
+import Header from 'components/Header';
+import dayjs from 'dayjs';
+import { useEffect, useRef, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { useNavigate, useParams } from 'react-router-dom';
 import {
   deleteLetters,
   editLetters,
   editMode,
   setLetters,
-} from "redux/modules/letters";
+} from 'redux/modules/letters';
+import styled from 'styled-components';
 
 const TEXTAREA_LENGTH_LIMIT = 100;
 
@@ -59,7 +58,7 @@ const StMaxLengthIndicator = styled.span`
   right: 4px;
   font-size: 0.75rem;
   text-align: right;
-  color: ${(props) => (props.$isMax ? "#aaa" : "#f00a")};
+  color: ${(props) => (props.$isMax ? '#aaa' : '#f00a')};
 `;
 
 const StDetailInfoWrapper = styled.div`
@@ -105,7 +104,7 @@ const StBtnContainer = styled.div`
 `;
 
 function Detail() {
-  const [textareaValue, setTextareaValue] = useState("");
+  const [textareaValue, setTextareaValue] = useState('');
   const { letters, isEditing } = useSelector((state) => state.letters);
   const dispatch = useDispatch();
   const params = useParams();
@@ -113,11 +112,11 @@ function Detail() {
   const textareaRef = useRef();
 
   useEffect(() => {
-    if (!localStorage.getItem("letters") || Object.keys(params).length === 0) {
-      alert("올바르지 않은 접근입니다. 홈 페이지로 이동합니다.");
-      navigate("/");
+    if (!localStorage.getItem('letters') || Object.keys(params).length === 0) {
+      alert('올바르지 않은 접근입니다. 홈 페이지로 이동합니다.');
+      navigate('/');
     } else {
-      const storageData = JSON.parse(localStorage.getItem("letters"));
+      const storageData = JSON.parse(localStorage.getItem('letters'));
       dispatch(setLetters(storageData));
     }
     return () => {
@@ -128,7 +127,7 @@ function Detail() {
 
   useEffect(() => {
     const stringifiedLetterMap = JSON.stringify(letters);
-    localStorage.setItem("letters", stringifiedLetterMap);
+    localStorage.setItem('letters', stringifiedLetterMap);
   }, [letters]);
 
   const selectedLetter = { ...letters?.[params.id] };
@@ -157,7 +156,7 @@ function Detail() {
 
   const editCompletedBtnClickHandler = (e) => {
     if (selectedLetter?.content === textareaValue) {
-      alert("수정 사항이 없습니다.");
+      alert('수정 사항이 없습니다.');
     } else {
       updateLetter(textareaValue);
       dispatch(editMode(false));
@@ -168,9 +167,9 @@ function Detail() {
   };
 
   const deleteBtnClickHandler = (e) => {
-    if (window.confirm("정말 삭제하시겠습니까?")) {
+    if (window.confirm('정말 삭제하시겠습니까?')) {
       dispatch(deleteLetters(selectedLetter));
-      setTimeout(() => navigate("/"), 0);
+      setTimeout(() => navigate('/'), 0);
     }
   };
   const setEditedDate = () => {
@@ -179,15 +178,15 @@ function Detail() {
         {selectedLetter?.editedAt
           ? dayjs(selectedLetter?.editedAt).isSame(
               dayjs(selectedLetter?.createdAt),
-              "day"
+              'day'
             )
             ? `같은 날 ${dayjs(selectedLetter?.editedAt).format(
-                "hh:mm에 편집됨"
+                'hh:mm에 편집됨'
               )}`
             : dayjs(selectedLetter?.editedAt).format(
-                "YYYY년 M월 D일 hh:mm에 편집됨"
+                'YYYY년 M월 D일 hh:mm에 편집됨'
               )
-          : ""}
+          : ''}
       </span>
     );
   };
@@ -230,7 +229,7 @@ function Detail() {
             <h3>{selectedLetter?.nickname}</h3>
             <p>
               {dayjs(selectedLetter?.createdAt).format(
-                "YYYY년 M월 D일 hh:mm에 작성"
+                'YYYY년 M월 D일 hh:mm에 작성'
               )}
             </p>
             {setEditedDate()}
@@ -248,7 +247,6 @@ function Detail() {
           </StBtnContainer>
         )}
       </StBGContainer>
-      <Footer />
     </div>
   );
 }

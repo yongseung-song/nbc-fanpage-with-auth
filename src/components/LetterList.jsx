@@ -1,7 +1,6 @@
-import React from "react";
-import Letter from "./Letter";
-import styled from "styled-components";
-import { useSelector } from "react-redux";
+import { useSelector } from 'react-redux';
+import styled from 'styled-components';
+import Letter from './Letter';
 
 const StLetterListContainer = styled.div`
   width: 100%;
@@ -26,12 +25,12 @@ const StEmptyListContainer = styled.div`
 
 function LetterList() {
   const letters = useSelector((state) => state.letters);
-  const member = useSelector((state) => state.member);
+  const members = useSelector((state) => state.members);
 
   const letterEntries = Object.entries(letters.letters).reverse();
   const filterLetters = () => {
     return letterEntries.filter(
-      (letter) => letter[1].writedTo === member.selectedMember
+      (letter) => letter[1].writedTo === members.selectedMember
     );
   };
 
@@ -44,7 +43,7 @@ function LetterList() {
           })
         ) : (
           <StEmptyListContainer>
-            <p>{member.selectedMember}에게 남겨진 팬레터가 없습니다.</p>
+            <p>{members.selectedMember}에게 남겨진 팬레터가 없습니다.</p>
           </StEmptyListContainer>
         )}
       </ul>
