@@ -1,4 +1,3 @@
-import { membersMap } from 'pages/Home';
 import { useDispatch, useSelector } from 'react-redux';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { setSelectedMember } from 'redux/modules/members';
@@ -18,8 +17,8 @@ function Header() {
 
   const selectButtonHandler = (e) => {
     e.preventDefault();
-    const id = +e.target.id;
-    dispatch(setSelectedMember(membersMap.get(id)));
+    const id = e.target.id;
+    dispatch(setSelectedMember(id));
   };
 
   const homeButtonHandler = (e) => {
@@ -39,11 +38,11 @@ function Header() {
     <>
       <StHeader>
         {curPage === 'home' ? (
-          members.map((item, idx) => {
+          ['이장원', '신재평'].map((item, idx) => {
             return (
               <StNavBtn
                 $isSelected={item === members.selectedMember}
-                id={idx}
+                id={item}
                 key={idx}
                 onClick={selectButtonHandler}
               >

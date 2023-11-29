@@ -1,11 +1,9 @@
-// >>> 액션 타입
 const SET_LETTER = 'letters/SET_LETTER';
 const ADD_LETTER = 'letters/ADD_LETTER';
 const EDIT_LETTER = 'letters/EDIT_LETTER';
 const DELETE_LETTER = 'letters/DELETE_LETTER';
 const ON_EDIT_MODE = 'letters/ON_EDIT_MODE';
 
-// >>> 액션 크리에이터
 export const setLetters = (payload) => {
   return {
     type: SET_LETTER,
@@ -37,13 +35,11 @@ export const editMode = (payload) => {
   };
 };
 
-// >>> 초기값 정의
 const initialState = {
   letters: {},
   isEditing: false,
 };
 
-// >>> 리듀서 정의
 const letters = (state = initialState, action) => {
   switch (action.type) {
     case SET_LETTER:

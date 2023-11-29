@@ -7,9 +7,6 @@ import styled from 'styled-components';
 import bgBottom from '../assets/bgbottom.png';
 import bgWall from '../assets/bgwall.png';
 
-export const members = ['이장원', '신재평'];
-export const membersMap = new Map(members.entries());
-
 function Home() {
   const letters = useSelector((state) => state.letters);
   const dispatch = useDispatch();

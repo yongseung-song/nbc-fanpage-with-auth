@@ -4,6 +4,36 @@ import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import defaultAvatar from '../assets/avatar.jpg';
 
+function Letter({ letter }) {
+  const navigate = useNavigate();
+  const letterRef = useRef();
+  const letterClickHandler = () => {
+    const id = letterRef.current.id;
+    navigate(`details/${id}`);
+  };
+
+  return (
+    <StLetterContainer
+      ref={letterRef}
+      id={letter?.id}
+      onClick={letterClickHandler}
+    >
+      <StImg src={letter?.avatar || defaultAvatar} alt={letter?.nickname} />
+      <StLetterContents>
+        <div>
+          <h3>{letter?.nickname}</h3>
+          <StLetterDate>
+            {`${dayjs(letter?.createdAt).format('YYYY년 MM월 DD일 h:mm')}`}
+          </StLetterDate>
+        </div>
+        <StLetterMsg>{letter?.content}</StLetterMsg>
+      </StLetterContents>
+    </StLetterContainer>
+  );
+}
+
+export default Letter;
+
 const StLetterContainer = styled.li`
   padding: 12px;
   border: 1px solid #0008;
@@ -52,33 +82,3 @@ const StLetterMsg = styled.p`
   margin-top: 6px;
   padding: 4px 0;
 `;
-
-function Letter({ letter }) {
-  const navigate = useNavigate();
-  const letterRef = useRef();
-  const letterClickHandler = () => {
-    const id = letterRef.current.id;
-    navigate(`details/${id}`);
-  };
-
-  return (
-    <StLetterContainer
-      ref={letterRef}
-      id={letter?.id}
-      onClick={letterClickHandler}
-    >
-      <StImg src={letter?.avatar || defaultAvatar} alt={letter?.nickname} />
-      <StLetterContents>
-        <div>
-          <h3>{letter?.nickname}</h3>
-          <StLetterDate>
-            {`${dayjs(letter?.createdAt).format('YYYY년 MM월 DD일 h:mm')}`}
-          </StLetterDate>
-        </div>
-        <StLetterMsg>{letter?.content}</StLetterMsg>
-      </StLetterContents>
-    </StLetterContainer>
-  );
-}
-
-export default Letter;
