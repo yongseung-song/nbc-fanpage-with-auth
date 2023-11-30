@@ -7,10 +7,6 @@ function LetterList() {
   const { letters } = useSelector((state) => state.letters);
   const { selectedMember } = useSelector((state) => state.members);
 
-  const lettersTemp = [...letters];
-  console.log(
-    lettersTemp.sort((a, b) => dayjs(b.createdAt) - dayjs(a.createdAt))
-  );
   const filteredLettersInDescendingOrder = letters
     ?.filter((letter) => letter.writedTo === selectedMember)
     .sort((a, b) => dayjs(b.createdAt) - dayjs(a.createdAt));

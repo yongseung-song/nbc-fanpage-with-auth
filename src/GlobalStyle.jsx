@@ -1,7 +1,7 @@
-import { createGlobalStyle } from "styled-components";
-import reset from "styled-reset";
+import { createGlobalStyle } from 'styled-components';
+import reset from 'styled-reset';
 
-const fontFamily = "NanumSquareNeo-Variable";
+const fontFamily = 'NanumSquareNeo-Variable';
 
 const GlobalStyle = createGlobalStyle`
   ${reset}
@@ -22,8 +22,8 @@ const GlobalStyle = createGlobalStyle`
     display: none;
   }
   h1 {
-    font-variation-settings: "wght" 700;
-    font-size: 3rem;
+    font-variation-settings: "wght" 400;
+    font-size: 2rem;
   }
   h3 {
     font-weight: 600;
@@ -32,7 +32,7 @@ const GlobalStyle = createGlobalStyle`
     font-size: 0.8rem;
   }
   input {
-    width: 89%;
+    
   }
   select {
     padding: 4px;
@@ -54,7 +54,7 @@ const GlobalStyle = createGlobalStyle`
     width: 100px;
     border: none;
     align-items: center;
-    background-color: white;
+    background-color: #fff;
   }
 
   footer {

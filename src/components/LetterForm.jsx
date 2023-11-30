@@ -138,6 +138,7 @@ const StInputContainer = styled.div`
     padding-top: 6px;
   }
   input {
+    width: 89%;
     padding: 4px 2px;
     border: 1px solid ${BORDER_COLOR};
   }
