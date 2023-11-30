@@ -30,17 +30,27 @@ export const __signUp = createAsyncThunk(
       console.log('response', response);
       return thunkAPI.fulfillWithValue(response.data);
     } catch (error) {
-      return thunkAPI.rejectWithValue(error);
+      // TODO error 핸들링
+      return thunkAPI.rejectWithValue(error.response.data);
     }
   }
 );
-
+// TODO 로그인 기능 구현
 export const __signIn = createAsyncThunk(
   'signIn',
   async (payload, thunkAPI) => {
     try {
-      const response = await axios.post();
-    } catch (error) {}
+      const response = await axios.post(
+        `${process.env.REACT_APP_JWT_URL}/login`,
+        {
+          id: payload.idValue,
+          password: payload.passwordValue,
+        }
+      );
+      return thunkAPI.fulfillWithValue(response.data);
+    } catch (error) {
+      return thunkAPI.rejectWithValue();
+    }
   }
 );
 
