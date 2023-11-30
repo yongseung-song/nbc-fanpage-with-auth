@@ -1,8 +1,8 @@
 import dayjs from 'dayjs';
 import { useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { addLetters } from 'redux/modules/letters';
-import { setSelectedMember } from 'redux/modules/members';
+import { letterAdded } from 'redux/modules/lettersSlice';
+import { setSelectedMember } from 'redux/modules/membersSlice';
 import styled from 'styled-components';
 import { v4 as uuid } from 'uuid';
 import defaultAvatar from '../assets/avatar.jpg';
@@ -15,8 +15,8 @@ const BACKGROUND_COLOR = '#feffd0bf';
 function LetterForm() {
   const [textareaValue, setTextareaValue] = useState('');
   const [inputValue, setInputValue] = useState('');
-  const letters = useSelector((state) => state.letters);
-  const member = useSelector((state) => state.members);
+  const { letters } = useSelector((state) => state.letters);
+  const { selectedMember } = useSelector((state) => state.members);
   const dispatch = useDispatch();
 
   const inputRef = useRef();
@@ -25,7 +25,7 @@ function LetterForm() {
 
   useEffect(() => {
     inputRef.current.focus();
-  }, [member.selectedMember, letters.letters]);
+  }, [selectedMember, letters]);
 
   const letterSubmitHandler = (e) => {
     e.preventDefault();
@@ -40,7 +40,7 @@ function LetterForm() {
         avatar: defaultAvatar,
       };
 
-      dispatch(addLetters(submittedLetter));
+      dispatch(letterAdded(submittedLetter));
       dispatch(setSelectedMember(selectRef.current.value));
 
       setTextareaValue('');
@@ -50,10 +50,11 @@ function LetterForm() {
     }
   };
 
-  const textChangeHandler = () => {
+  const onTextChangeHandler = () => {
     setTextareaValue(textareaRef.current.value);
     setInputValue(inputRef.current.value);
   };
+  const onSelectChangeHandler = () => {};
 
   return (
     <StLetterFormContainer>
@@ -69,7 +70,7 @@ function LetterForm() {
             id="text"
             type="text"
             maxLength={NICKNAME_LIMIT}
-            onChange={textChangeHandler}
+            onChange={onTextChangeHandler}
           />
           <StMaxLengthIndicator $isMax={inputValue.length < NICKNAME_LIMIT}>
             {inputValue.length}/{NICKNAME_LIMIT}
@@ -86,7 +87,7 @@ function LetterForm() {
             name="textarea"
             rows={4}
             maxLength={CONTENT_LIMIT}
-            onChange={textChangeHandler}
+            onChange={onTextChangeHandler}
           />
           <StMaxLengthIndicator $isMax={textareaValue.length < CONTENT_LIMIT}>
             {textareaValue.length}/{CONTENT_LIMIT}
@@ -97,8 +98,9 @@ function LetterForm() {
           <select
             ref={selectRef}
             id="member-select"
-            value={member.selectedMember}
+            value={selectedMember}
             name="member-select"
+            onChange={onSelectChangeHandler}
           >
             <option value="이장원">이장원</option>
             <option value="신재평">신재평</option>

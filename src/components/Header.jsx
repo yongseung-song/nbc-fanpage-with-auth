@@ -1,19 +1,19 @@
 import { useDispatch, useSelector } from 'react-redux';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { setSelectedMember } from 'redux/modules/members';
+import { setSelectedMember } from 'redux/modules/membersSlice';
 import styled from 'styled-components';
 import bannerBg from '../assets/bannerBg.png';
 import bannerLogo from '../assets/bannerLogo.png';
 
 function Header() {
-  const members = useSelector((state) => state.members);
+  const { members, selectedMember } = useSelector((state) => state.members);
   const letters = useSelector((state) => state.letters);
   const dispatch = useDispatch();
   const location = useLocation();
   const navigate = useNavigate();
 
   // 현재 위치
-  const curPage = location.pathname.includes('detail') ? 'detail' : 'home';
+  const currentPage = location.pathname.includes('detail') ? 'detail' : 'home';
 
   const selectButtonHandler = (e) => {
     e.preventDefault();
@@ -37,11 +37,11 @@ function Header() {
   return (
     <>
       <StHeader>
-        {curPage === 'home' ? (
-          ['이장원', '신재평'].map((item, idx) => {
+        {currentPage === 'home' ? (
+          members.map((item, idx) => {
             return (
               <StNavBtn
-                $isSelected={item === members.selectedMember}
+                $isSelected={item === selectedMember}
                 id={item}
                 key={idx}
                 onClick={selectButtonHandler}

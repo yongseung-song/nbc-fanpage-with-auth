@@ -2,13 +2,13 @@ import LetterForm from 'components/LetterForm';
 import LetterList from 'components/LetterList';
 import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { addLetters, setLetters } from 'redux/modules/letters';
+import { letterSet } from 'redux/modules/lettersSlice';
 import styled from 'styled-components';
 import bgBottom from '../assets/bgbottom.png';
 import bgWall from '../assets/bgwall.png';
 
 function Home() {
-  const letters = useSelector((state) => state.letters);
+  const { letters } = useSelector((state) => state.letters);
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -16,23 +16,20 @@ function Home() {
     if (!localStorage.getItem('letters')) {
       fetch('fakeData.json')
         .then((res) => res.json())
-        .then((result) =>
-          result.forEach((item) => {
-            dispatch(addLetters(item));
-          })
-        );
-      const stringifiedLetterMap = JSON.stringify(letters.letters);
-      localStorage.setItem('letters', stringifiedLetterMap);
+        .then((result) => dispatch(letterSet(result)));
+      const stringifiedLetters = JSON.stringify(letters);
+      localStorage.setItem('letters', stringifiedLetters);
+      console.log(localStorage.getItem('letters'));
     } else {
       const storageData = JSON.parse(localStorage.getItem('letters'));
-      dispatch(setLetters(storageData));
+      dispatch(letterSet(storageData));
     }
   }, []);
 
   useEffect(() => {
-    const stringifiedLetterMap = JSON.stringify(letters.letters);
+    const stringifiedLetterMap = JSON.stringify(letters);
     localStorage.setItem('letters', stringifiedLetterMap);
-  }, [letters.letters]);
+  }, [letters]);
 
   return (
     <div>

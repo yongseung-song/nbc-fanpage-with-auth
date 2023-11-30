@@ -1,17 +1,158 @@
-import Header from 'components/Header';
 import dayjs from 'dayjs';
 import { useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate, useParams } from 'react-router-dom';
 import {
-  deleteLetters,
-  editLetters,
-  editMode,
-  setLetters,
-} from 'redux/modules/letters';
+  isEditMode,
+  letterDeleted,
+  letterEdited,
+  letterSet,
+} from 'redux/modules/lettersSlice';
 import styled from 'styled-components';
 
 const TEXTAREA_LENGTH_LIMIT = 100;
+
+function Detail() {
+  const [textareaValue, setTextareaValue] = useState('');
+  const { letters, isEditing } = useSelector((state) => state.letters);
+  const dispatch = useDispatch();
+  const params = useParams();
+  const navigate = useNavigate();
+  const textareaRef = useRef();
+
+  useEffect(() => {
+    if (!localStorage.getItem('letters') || Object.keys(params).length === 0) {
+      alert('올바르지 않은 접근입니다. 홈 페이지로 이동합니다.');
+      navigate('/');
+    } else {
+      const storageData = JSON.parse(localStorage.getItem('letters'));
+      dispatch(letterSet(storageData));
+    }
+    return () => {
+      // 무슨 일이 생겨서 Home 으로 이동하면 isEditing
+      dispatch(isEditMode(false));
+    };
+  }, []);
+
+  useEffect(() => {
+    const stringifiedLetterMap = JSON.stringify(letters);
+    localStorage.setItem('letters', stringifiedLetterMap);
+  }, [letters]);
+
+  const selectedId = params.id;
+  console.log(params.id);
+  const selectedLetter = {
+    ...letters.find((letter) => letter.id === selectedId),
+  };
+
+  // console.log(selectedLetter);
+
+  const textareaChangeHandler = (e) => {
+    setTextareaValue(e.target.value);
+  };
+
+  const editBtnClickHandler = (e) => {
+    dispatch(isEditMode(true));
+    setTextareaValue(selectedLetter.content);
+  };
+
+  const editCompleteBtnClickHandler = (e) => {
+    if (selectedLetter?.content === textareaValue) {
+      alert('수정 사항이 없습니다.');
+    } else {
+      dispatch(letterEdited({ selectedId, textareaValue }));
+      dispatch(isEditMode(false));
+    }
+  };
+  const editCancelBtnClickHandler = () => {
+    dispatch(isEditMode(false));
+  };
+
+  const deleteBtnClickHandler = (e) => {
+    if (window.confirm('정말 삭제하시겠습니까?')) {
+      dispatch(letterDeleted(selectedId));
+      setTimeout(() => navigate('/'), 0);
+    }
+  };
+  const setEditedDate = () => {
+    return (
+      <span>
+        {selectedLetter?.editedAt
+          ? dayjs(selectedLetter?.editedAt).isSame(
+              dayjs(selectedLetter?.createdAt),
+              'day'
+            )
+            ? `같은 날 ${dayjs(selectedLetter?.editedAt).format(
+                'hh:mm에 편집됨'
+              )}`
+            : dayjs(selectedLetter?.editedAt).format(
+                'YYYY년 M월 D일 hh:mm에 편집됨'
+              )
+          : ''}
+      </span>
+    );
+  };
+
+  return (
+    <div>
+      <StBGContainer>
+        <StDetailContainer>
+          <h4>{`To. ${selectedLetter?.writedTo}`}</h4>
+          {isEditing ? (
+            <StTextareaContainer>
+              <textarea
+                ref={textareaRef}
+                autoFocus
+                required
+                value={textareaValue}
+                autoCorrect="off"
+                id="textarea"
+                name="textarea"
+                rows={3}
+                maxLength={TEXTAREA_LENGTH_LIMIT}
+                onChange={textareaChangeHandler}
+              />
+              <StMaxLengthIndicator
+                $isMax={textareaValue?.length < TEXTAREA_LENGTH_LIMIT}
+              >
+                {textareaValue?.length}/{TEXTAREA_LENGTH_LIMIT}
+              </StMaxLengthIndicator>
+            </StTextareaContainer>
+          ) : (
+            <p>{selectedLetter?.content}</p>
+          )}
+          <StDetailInfoWrapper>
+            <img
+              src={selectedLetter?.avatar}
+              alt={selectedLetter?.nickname}
+              width="199px"
+            />
+            <h3>{selectedLetter?.nickname}</h3>
+            <p>
+              {dayjs(selectedLetter?.createdAt).format(
+                'YYYY년 M월 D일 hh:mm에 작성'
+              )}
+            </p>
+            {setEditedDate()}
+          </StDetailInfoWrapper>
+        </StDetailContainer>
+        {isEditing ? (
+          <StBtnContainer>
+            <button onClick={editCompleteBtnClickHandler}>수정 완료</button>
+            <button onClick={editCancelBtnClickHandler}>취소</button>
+          </StBtnContainer>
+        ) : (
+          <StBtnContainer>
+            <button onClick={editBtnClickHandler}>수정</button>
+            <button onClick={deleteBtnClickHandler}>삭제</button>
+          </StBtnContainer>
+        )}
+      </StBGContainer>
+    </div>
+  );
+}
+
+export default Detail;
 
 const StBGContainer = styled.div`
   background-color: #e3e2ce;
@@ -102,153 +243,3 @@ const StBtnContainer = styled.div`
     }
   }
 `;
-
-function Detail() {
-  const [textareaValue, setTextareaValue] = useState('');
-  const { letters, isEditing } = useSelector((state) => state.letters);
-  const dispatch = useDispatch();
-  const params = useParams();
-  const navigate = useNavigate();
-  const textareaRef = useRef();
-
-  useEffect(() => {
-    if (!localStorage.getItem('letters') || Object.keys(params).length === 0) {
-      alert('올바르지 않은 접근입니다. 홈 페이지로 이동합니다.');
-      navigate('/');
-    } else {
-      const storageData = JSON.parse(localStorage.getItem('letters'));
-      dispatch(setLetters(storageData));
-    }
-    return () => {
-      // 무슨 일이 생겨서 Home 으로 이동하면 isEditing
-      dispatch(editMode(false));
-    };
-  }, []);
-
-  useEffect(() => {
-    const stringifiedLetterMap = JSON.stringify(letters);
-    localStorage.setItem('letters', stringifiedLetterMap);
-  }, [letters]);
-
-  const selectedLetter = { ...letters?.[params.id] };
-
-  const updateLetter = (updatedContent) => {
-    dispatch(
-      editLetters({
-        [params.id]: {
-          ...selectedLetter,
-          content: updatedContent,
-          editedAt: dayjs().toJSON(),
-        },
-        id: params.id,
-      })
-    );
-  };
-
-  const textareaChangeHandler = (e) => {
-    setTextareaValue(e.target.value);
-  };
-
-  const editBtnClickHandler = (e) => {
-    dispatch(editMode(true));
-    setTextareaValue(selectedLetter.content);
-  };
-
-  const editCompletedBtnClickHandler = (e) => {
-    if (selectedLetter?.content === textareaValue) {
-      alert('수정 사항이 없습니다.');
-    } else {
-      updateLetter(textareaValue);
-      dispatch(editMode(false));
-    }
-  };
-  const editCancelBtnClickHandler = () => {
-    dispatch(editMode(false));
-  };
-
-  const deleteBtnClickHandler = (e) => {
-    if (window.confirm('정말 삭제하시겠습니까?')) {
-      dispatch(deleteLetters(selectedLetter));
-      setTimeout(() => navigate('/'), 0);
-    }
-  };
-  const setEditedDate = () => {
-    return (
-      <span>
-        {selectedLetter?.editedAt
-          ? dayjs(selectedLetter?.editedAt).isSame(
-              dayjs(selectedLetter?.createdAt),
-              'day'
-            )
-            ? `같은 날 ${dayjs(selectedLetter?.editedAt).format(
-                'hh:mm에 편집됨'
-              )}`
-            : dayjs(selectedLetter?.editedAt).format(
-                'YYYY년 M월 D일 hh:mm에 편집됨'
-              )
-          : ''}
-      </span>
-    );
-  };
-
-  return (
-    <div>
-      <Header />
-      <StBGContainer>
-        <StDetailContainer>
-          <h4>{`To. ${selectedLetter?.writedTo}`}</h4>
-          {isEditing ? (
-            <StTextareaContainer>
-              <textarea
-                ref={textareaRef}
-                autoFocus
-                required
-                value={textareaValue}
-                autoCorrect="off"
-                id="textarea"
-                name="textarea"
-                rows={3}
-                maxLength={TEXTAREA_LENGTH_LIMIT}
-                onChange={textareaChangeHandler}
-              />
-              <StMaxLengthIndicator
-                $isMax={textareaValue.length < TEXTAREA_LENGTH_LIMIT}
-              >
-                {textareaValue.length}/{TEXTAREA_LENGTH_LIMIT}
-              </StMaxLengthIndicator>
-            </StTextareaContainer>
-          ) : (
-            <p>{selectedLetter?.content}</p>
-          )}
-          <StDetailInfoWrapper>
-            <img
-              src={selectedLetter?.avatar}
-              alt={selectedLetter?.nickname}
-              width="199px"
-            />
-            <h3>{selectedLetter?.nickname}</h3>
-            <p>
-              {dayjs(selectedLetter?.createdAt).format(
-                'YYYY년 M월 D일 hh:mm에 작성'
-              )}
-            </p>
-            {setEditedDate()}
-          </StDetailInfoWrapper>
-        </StDetailContainer>
-        {isEditing ? (
-          <StBtnContainer>
-            <button onClick={editCompletedBtnClickHandler}>수정 완료</button>
-            <button onClick={editCancelBtnClickHandler}>취소</button>
-          </StBtnContainer>
-        ) : (
-          <StBtnContainer>
-            <button onClick={editBtnClickHandler}>수정</button>
-            <button onClick={deleteBtnClickHandler}>삭제</button>
-          </StBtnContainer>
-        )}
-      </StBGContainer>
-    </div>
-  );
-}
-
-export default Detail;
