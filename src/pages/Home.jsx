@@ -57,4 +57,6 @@ const StLetterContainer = styled.div`
   min-width: 200px;
   width: 480px;
   padding-bottom: 28px;
+  display: flex;
+  flex-direction: column;
 `;

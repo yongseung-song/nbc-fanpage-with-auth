@@ -1,38 +1,81 @@
+import { useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/ReactToastify.min.css';
+import { __signUp } from 'redux/modules/authSlice';
 import styled from 'styled-components';
-import InputDiv from './common/InputDiv';
 
 function SignUp({ setMode }) {
-  const onSigninBtnClickHandler = (e) => {
+  const [idValue, setIdValue] = useState('');
+  const [passwordValue, setPasswordValue] = useState('');
+  const [nicknameValue, setNickNameValue] = useState('');
+  const [isValid, setIsValid] = useState('');
+  const navigate = useNavigate();
+  const { success, message, isError, isLoggedIn, error } = useSelector(
+    (state) => state.auth
+  );
+
+  useEffect(() => {
+    if (isLoggedIn) navigate('/');
+  }, [isLoggedIn]);
+  const dispatch = useDispatch();
+  console.log(isLoggedIn);
+  const onSignUpBtnClickHandler = (e) => {
+    e.preventDefault();
+    dispatch(__signUp({ idValue, passwordValue, nicknameValue }));
+  };
+  const onGotoSignInBtnClickHandler = () => {
     setMode('signin');
+  };
+
+  const onInputChangeHandler = (e, mode) => {
+    switch (mode) {
+      case 'id':
+        setIdValue(e.target.value);
+        break;
+      case 'password':
+        setPasswordValue(e.target.value);
+        break;
+      case 'nickname':
+        setNickNameValue(e.target.value);
+        break;
+      default:
+        break;
+    }
   };
   return (
     <StFormContainer>
       <h1>회원가입</h1>
       <StForm action="">
-        <InputDiv
-          id={'id'}
-          text={'아이디'}
-          minLetters={4}
-          maxLetters={10}
-          type={'text'}
+        <StLabel htmlFor="id">아이디</StLabel>
+        <StInput
+          id="id"
+          type="text"
+          value={idValue}
+          placeholder="4 ~ 10"
+          onChange={(e) => onInputChangeHandler(e, 'id')}
         />
-        <InputDiv
-          id={'password'}
-          text={'비밀번호'}
-          minLetters={4}
-          maxLetters={15}
-          type={'password'}
+        <StLabel htmlFor="password">패스워드</StLabel>
+        <StInput
+          id="password"
+          type="password"
+          value={passwordValue}
+          placeholder="4 ~ 15"
+          onChange={(e) => onInputChangeHandler(e, 'password')}
         />
-        <InputDiv
-          id={'nickname'}
-          text={'닉네임'}
-          minLetters={1}
-          maxLetters={10}
-          type={'text'}
+        <StLabel htmlFor="nickname">닉네임</StLabel>
+        <StInput
+          id="nickname"
+          type="text"
+          value={nicknameValue}
+          placeholder="1 ~ 10"
+          onChange={(e) => onInputChangeHandler(e, 'nickname')}
         />
-        <button>회원가입</button>
+        <button onClick={onSignUpBtnClickHandler}>회원가입</button>
       </StForm>
-      <button onClick={onSigninBtnClickHandler}>로그인</button>
+      <button onClick={onGotoSignInBtnClickHandler}>로그인</button>
+      <ToastContainer />
     </StFormContainer>
   );
 }
@@ -57,7 +100,6 @@ const StFormContainer = styled.div`
     text-align: start;
   }
   form + button {
-    display: flex;
     color: #aaa;
     cursor: pointer;
   }
@@ -71,7 +113,8 @@ const StForm = styled.form`
   height: 80%;
   margin-bottom: 12px;
   padding: 12px 0;
-  justify-content: space-between;
+  display: flex;
+  flex-direction: column;
   gap: 12px;
   label {
     font-size: 0;
@@ -79,6 +122,7 @@ const StForm = styled.form`
   input {
     padding: 12px 8px;
     font-size: 1rem;
+    width: 100%;
     border: none;
     border-bottom: 1px solid #0003;
   }
@@ -89,9 +133,7 @@ const StForm = styled.form`
   button {
     width: 100%;
     height: 60px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+    display: block;
     font-size: 1rem;
     border: 1px solid #0005;
     background-color: #eee;
@@ -100,4 +142,22 @@ const StForm = styled.form`
   button:hover {
     background-color: #ddd;
   }
+`;
+
+const StLabel = styled.label`
+  font-size: 0;
+`;
+const StInput = styled.input`
+  padding: 12px 8px;
+  font-size: 1rem;
+  border: none;
+  border-bottom: 1px solid #0003;
+`;
+const StSpan = styled.span`
+  display: block;
+  margin-top: 4px;
+  text-align: end;
+  font-size: 0.8rem;
+  /* opacity: ${(props) => (props.$isValidated === true ? '0' : '1')};
+  color: ${(props) => (props.$isValidated === true ? '#000' : '#f00')}; */
 `;

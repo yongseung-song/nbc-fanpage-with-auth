@@ -5,8 +5,6 @@ function InputDiv({ id, text, minLetters, maxLetters, type }) {
   const [inputValue, setInputValue] = useState('');
   const [isValid, setIsValid] = useState(true);
 
-  const message = '야하하!';
-
   const checkInputIsValid = () => {
     const result =
       inputValue.length >= minLetters - 1 && inputValue.length <= maxLetters - 1

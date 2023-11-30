@@ -1,20 +1,28 @@
 import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/ReactToastify.min.css';
 import styled from 'styled-components';
 import InputDiv from './common/InputDiv';
 
 function SignIn({ setMode }) {
   const onSignInBtnClickHandler = (e) => {
     e.preventDefault();
+    // thunk 들어올 자리
     toast.success('회원가입 완료', {
-      position: toast.TYPE.SUCCESS,
+      position: 'top-right',
+      autoClose: 5000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+      theme: 'light',
     });
   };
   const onSignupBtnClickHandler = (e) => {
     setMode('signup');
   };
   return (
-    <StSignInWrapper>
-      <ToastContainer />
+    <>
       <StFormContainer>
         <h1>로그인</h1>
         <StForm action="">
@@ -36,22 +44,13 @@ function SignIn({ setMode }) {
           {/* TODO 로그인 활성화 및 비활성화 방법 고안 */}
         </StForm>
         <button onClick={onSignupBtnClickHandler}>회원가입</button>
+        <ToastContainer />
       </StFormContainer>
-    </StSignInWrapper>
+    </>
   );
 }
 
 export default SignIn;
-
-const StSignInWrapper = styled.div`
-  background-color: #e3e2ce;
-  width: 100vw;
-  height: 100vh;
-  /* display: flex; */
-  /* justify-content: start; */
-  padding-top: 20vh;
-  align-items: center;
-`;
 
 const StFormContainer = styled.div`
   max-width: 500px;
@@ -71,7 +70,6 @@ const StFormContainer = styled.div`
     text-align: start;
   }
   form + button {
-    display: flex;
     color: #aaa;
     cursor: pointer;
   }
@@ -85,7 +83,8 @@ const StForm = styled.form`
   height: 80%;
   margin-bottom: 12px;
   padding: 12px 0;
-  justify-content: space-between;
+  display: flex;
+  flex-direction: column;
   gap: 12px;
   label {
     font-size: 0;
@@ -93,6 +92,7 @@ const StForm = styled.form`
   input {
     padding: 12px 8px;
     font-size: 1rem;
+    width: 100%;
     border: none;
     border-bottom: 1px solid #0003;
   }
@@ -103,9 +103,7 @@ const StForm = styled.form`
   button {
     width: 100%;
     height: 60px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+    display: block;
     font-size: 1rem;
     border: 1px solid #0005;
     background-color: #eee;

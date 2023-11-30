@@ -14,8 +14,8 @@ const GlobalStyle = createGlobalStyle`
   body * {
     font-family: ${fontFamily};
     box-sizing: border-box;
-    display: flex;
-    flex-direction: column;
+    ${'' /* display: flex; */}
+    ${'' /* flex-direction: column; */}
     -ms-overflow-style: none;
   }
   ::-webkit-scrollbar {

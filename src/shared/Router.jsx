@@ -12,7 +12,7 @@ function Router() {
   return (
     <BrowserRouter>
       <Routes>
-        <Route element={isLoggedIn ? <Layout /> : <Navigate to={'/auth'} />}>
+        <Route element={isLoggedIn ? <Layout /> : <Navigate to={'/login'} />}>
           {/* <Route element={<Layout />}> */}
           <Route path="/" element={<Home />} />
           <Route path="details/:id" element={<Detail />} />
