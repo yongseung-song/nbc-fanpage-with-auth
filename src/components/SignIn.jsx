@@ -1,37 +1,57 @@
+import { ToastContainer, toast } from 'react-toastify';
 import styled from 'styled-components';
 import InputDiv from './common/InputDiv';
 
 function SignIn({ setMode }) {
+  const onSignInBtnClickHandler = (e) => {
+    e.preventDefault();
+    toast.success('회원가입 완료', {
+      position: toast.TYPE.SUCCESS,
+    });
+  };
   const onSignupBtnClickHandler = (e) => {
     setMode('signup');
   };
   return (
-    <StFormContainer>
-      <h1>로그인</h1>
-      <StForm action="">
-        <InputDiv
-          id={'id'}
-          text={'아이디'}
-          minLetters={4}
-          maxLetters={10}
-          type={'text'}
-        />
-        <InputDiv
-          id={'password'}
-          text={'비밀번호'}
-          minLetters={4}
-          maxLetters={15}
-          type={'password'}
-        />
-        <button>로그인</button>
-        {/* TODO 로그인 활성화 및 비활성화 방법 고안 */}
-      </StForm>
-      <button onClick={onSignupBtnClickHandler}>회원가입</button>
-    </StFormContainer>
+    <StSignInWrapper>
+      <ToastContainer />
+      <StFormContainer>
+        <h1>로그인</h1>
+        <StForm action="">
+          <InputDiv
+            id={'id'}
+            text={'아이디'}
+            minLetters={4}
+            maxLetters={10}
+            type={'text'}
+          />
+          <InputDiv
+            id={'password'}
+            text={'비밀번호'}
+            minLetters={4}
+            maxLetters={15}
+            type={'password'}
+          />
+          <button onClick={onSignInBtnClickHandler}>로그인</button>
+          {/* TODO 로그인 활성화 및 비활성화 방법 고안 */}
+        </StForm>
+        <button onClick={onSignupBtnClickHandler}>회원가입</button>
+      </StFormContainer>
+    </StSignInWrapper>
   );
 }
 
 export default SignIn;
+
+const StSignInWrapper = styled.div`
+  background-color: #e3e2ce;
+  width: 100vw;
+  height: 100vh;
+  /* display: flex; */
+  /* justify-content: start; */
+  padding-top: 20vh;
+  align-items: center;
+`;
 
 const StFormContainer = styled.div`
   max-width: 500px;
