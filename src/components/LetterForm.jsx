@@ -17,6 +17,7 @@ function LetterForm() {
   const [inputValue, setInputValue] = useState('');
   const { letters } = useSelector((state) => state.letters);
   const { selectedMember } = useSelector((state) => state.members);
+  const { userId, avatar, nickname } = useSelector((state) => state.auth);
   const dispatch = useDispatch();
 
   const inputRef = useRef();
@@ -24,7 +25,7 @@ function LetterForm() {
   const selectRef = useRef();
 
   useEffect(() => {
-    inputRef.current.focus();
+    textareaRef.current.focus();
   }, [selectedMember, letters]);
 
   const letterSubmitHandler = (e) => {
@@ -50,32 +51,18 @@ function LetterForm() {
     }
   };
 
-  const onTextChangeHandler = () => {
+  const onTextareaChangeHandler = () => {
     setTextareaValue(textareaRef.current.value);
-    setInputValue(inputRef.current.value);
   };
   const onSelectChangeHandler = () => {};
 
   return (
     <StLetterFormContainer>
+      <StNicknameContainer>
+        <dt>닉네임 :</dt>
+        <dd>{nickname}</dd>
+      </StNicknameContainer>
       <form action="">
-        <StInputContainer>
-          <label htmlFor="text">닉네임 :</label>
-          <input
-            ref={inputRef}
-            required
-            value={inputValue}
-            autoFocus
-            autoComplete="off"
-            id="text"
-            type="text"
-            maxLength={NICKNAME_LIMIT}
-            onChange={onTextChangeHandler}
-          />
-          <StMaxLengthIndicator $isMax={inputValue.length < NICKNAME_LIMIT}>
-            {inputValue.length}/{NICKNAME_LIMIT}
-          </StMaxLengthIndicator>
-        </StInputContainer>
         <StInputContainer>
           <label htmlFor="textarea">내용 :</label>
           <textarea
@@ -87,7 +74,7 @@ function LetterForm() {
             name="textarea"
             rows={4}
             maxLength={CONTENT_LIMIT}
-            onChange={onTextChangeHandler}
+            onChange={onTextareaChangeHandler}
           />
           <StMaxLengthIndicator $isMax={textareaValue.length < CONTENT_LIMIT}>
             {textareaValue.length}/{CONTENT_LIMIT}
@@ -115,6 +102,7 @@ function LetterForm() {
 }
 
 export default LetterForm;
+
 const StLetterFormContainer = styled.div`
   min-width: 200px;
   max-width: 520px;
@@ -124,6 +112,18 @@ const StLetterFormContainer = styled.div`
   border: 1px solid ${BORDER_COLOR};
   border-radius: 12px;
   background-color: white;
+`;
+
+const StNicknameContainer = styled.dl`
+  display: flex;
+  gap: 8px;
+  font-size: 0.8rem;
+  margin-bottom: 12px;
+  dd {
+    text-decoration: underline #0003;
+    text-underline-offset: 3px;
+    font-weight: 700;
+  }
 `;
 
 const StInputContainer = styled.div`

@@ -9,6 +9,8 @@ import bgWall from '../assets/bgwall.png';
 
 function Home() {
   const { letters } = useSelector((state) => state.letters);
+  const { isLoggedIn } = useSelector((state) => state.auth);
+  // console.log(userId, nickname);
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -50,6 +52,7 @@ const StBGContainer = styled.div`
   background-position: calc(50% + 300px) calc(100% + 20px),
     calc(50% - 335px) 50%;
   background-size: 400px auto, 300px auto, 100% auto;
+  padding-top: 12px;
 `;
 const StLetterContainer = styled.div`
   height: calc(100vh - 332px);

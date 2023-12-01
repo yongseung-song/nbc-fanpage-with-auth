@@ -13,11 +13,11 @@ function InputDiv({ id, text, minLetters, maxLetters, type }) {
     setIsValid(result);
   };
   const onInputChangeHandler = (e) => {
-    console.log(e.target.value.length);
+    // console.log(e.target.value.length);
     setInputValue(e.target.value);
     checkInputIsValid();
   };
-  console.log(minLetters, inputValue.length);
+  // console.log(minLetters, inputValue.length);
   return (
     <div>
       <StLabel htmlFor={id}>{text}</StLabel>

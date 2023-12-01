@@ -37,24 +37,33 @@ function Header() {
   return (
     <>
       <StHeader>
-        {currentPage === 'home' ? (
-          members.map((item, idx) => {
-            return (
-              <StNavBtn
-                $isSelected={item === selectedMember}
-                id={item}
-                key={idx}
-                onClick={selectButtonHandler}
-              >
-                {item}
-              </StNavBtn>
-            );
-          })
-        ) : (
-          <StNavBtn $isSelected="true" onClick={homeButtonHandler}>
-            홈페이지로
-          </StNavBtn>
-        )}
+        <StNavBar>
+          <button>Home</button>
+          <div>
+            <button>내 프로필</button>
+            <button>로그아웃</button>
+          </div>
+        </StNavBar>
+        <StMemberSelectBtnContainer>
+          {currentPage === 'home' ? (
+            members.map((item, idx) => {
+              return (
+                <StMemberSelectBtn
+                  $isSelected={item === selectedMember}
+                  id={item}
+                  key={idx}
+                  onClick={selectButtonHandler}
+                >
+                  {item}
+                </StMemberSelectBtn>
+              );
+            })
+          ) : (
+            <StMemberSelectBtn $isSelected="true" onClick={homeButtonHandler}>
+              홈페이지로
+            </StMemberSelectBtn>
+          )}
+        </StMemberSelectBtnContainer>
       </StHeader>
     </>
   );
@@ -63,19 +72,47 @@ export default Header;
 
 const StHeader = styled.div`
   background: url(${bannerLogo}), url(${bannerBg});
-  background-position: 50% 0%, 50% 50%;
+  background-position: 50% 20%, 50% 50%;
   background-size: auto 140px, 100% 204px;
   background-repeat: no-repeat;
   height: 200px;
   display: flex;
-  flex-direction: row;
-  justify-content: center;
-  align-items: end;
-  gap: 12px;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
   box-sizing: border-box;
 `;
 
-const StNavBtn = styled.button`
+const StNavBar = styled.nav`
+  /* background: #e3e2ce; */
+  width: 100%;
+  padding: 12px 32px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-blend-mode: darken;
+  /* border-bottom: 1px solid black; */
+  div {
+    display: flex;
+    gap: 12px;
+  }
+  button {
+    padding: 12px;
+    width: fit-content;
+    background-color: #fff0;
+    background: #e3e2ce;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-weight: 700;
+    box-shadow: 0 0 4px #555f;
+  }
+`;
+const StMemberSelectBtnContainer = styled.div`
+  display: flex;
+  flex-direction: row;
+  gap: 8px;
+`;
+const StMemberSelectBtn = styled.button`
   width: fit-content;
   border: none;
   padding: 12px 18px 6px;

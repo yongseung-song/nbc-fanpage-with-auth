@@ -17,39 +17,67 @@ const initialState = {
 
 export const __signUp = createAsyncThunk(
   'signUp',
-  async (payload, thunkAPI) => {
+  async ({ id, password, nickname }, thunkAPI) => {
     try {
       const response = await axios.post(
         `${process.env.REACT_APP_JWT_URL}/register`,
         {
-          id: payload.idValue,
-          password: payload.passwordValue,
-          nickname: payload.nicknameValue,
+          id,
+          password,
+          nickname,
         }
       );
       console.log('response', response);
       return thunkAPI.fulfillWithValue(response.data);
     } catch (error) {
-      // TODO error 핸들링
-      return thunkAPI.rejectWithValue(error.response.data);
+      return thunkAPI.rejectWithValue({
+        errorMessage: error.response?.data.message,
+        error: error.response?.request.status,
+      });
     }
   }
 );
-// TODO 로그인 기능 구현
+
 export const __signIn = createAsyncThunk(
   'signIn',
-  async (payload, thunkAPI) => {
+  async ({ id, password }, thunkAPI) => {
     try {
       const response = await axios.post(
-        `${process.env.REACT_APP_JWT_URL}/login`,
+        `${process.env.REACT_APP_JWT_URL}/login?expiresIn=10s`,
         {
-          id: payload.idValue,
-          password: payload.passwordValue,
+          id,
+          password,
         }
       );
       return thunkAPI.fulfillWithValue(response.data);
     } catch (error) {
-      return thunkAPI.rejectWithValue();
+      return thunkAPI.rejectWithValue({
+        errorMessage: error.response?.data.message,
+        error: error.response?.request.status,
+      });
+    }
+  }
+);
+
+export const __getUser = createAsyncThunk(
+  'getUser',
+  async (accessToken, thunkAPI) => {
+    try {
+      const response = await axios.get(
+        `${process.env.REACT_APP_JWT_URL}/user`,
+        {
+          headers: {
+            'Content-type': 'application/json',
+            Authorization: `Bearer ${accessToken}`,
+          },
+        }
+      );
+      return thunkAPI.fulfillWithValue(response.data);
+    } catch (error) {
+      return thunkAPI.rejectWithValue({
+        errorMessage: error.response?.data.message,
+        error: error.response?.request.status,
+      });
     }
   }
 );
@@ -69,20 +97,62 @@ const authSlice = createSlice({
     },
     [__signUp.fulfilled]: (state, action) => {
       state.success = action.payload.success;
-      console.log(action.payload.message);
-      state.isLoggedIn = true;
       state.isLoading = false;
       state.isError = false;
-      toast.success('on slice');
+      toast.success('회원가입 성공!');
     },
     [__signUp.rejected]: (state, action) => {
       state.success = false;
       state.isLoading = false;
       // 임시방편
-      console.log(action.payload.message);
-      state.isLoggedIn = false;
+      // console.log(action.payload.message);
       state.isError = true;
       state.error = action.payload.error;
+      toast.error(action.payload.errorMessage);
+    },
+    [__signIn.pending]: (state, action) => {
+      state.isLoading = true;
+      state.isError = false;
+    },
+    [__signIn.fulfilled]: (state, action) => {
+      const { userId, nickname, accessToken } = action.payload;
+      localStorage.setItem('accessToken', JSON.stringify(accessToken));
+      state.success = action.payload.success;
+      state.userId = userId;
+      state.nickname = nickname;
+      state.isLoggedIn = true;
+      state.isLoading = false;
+      state.isError = false;
+      toast.success('로그인 성공');
+    },
+    [__signIn.rejected]: (state, action) => {
+      state.success = false;
+      state.isLoading = false;
+      state.isError = true;
+      state.error = action.payload.error;
+      toast.error(action.payload.errorMessage);
+    },
+    [__getUser.pending]: (state, action) => {
+      state.isLoading = true;
+      state.isError = false;
+    },
+    [__getUser.fulfilled]: (state, action) => {
+      const { id: userId, nickname, avatar, success } = action.payload;
+      state.isLoggedIn = true;
+      state.isLoading = false;
+      state.isError = false;
+      state.userId = userId;
+      state.nickname = nickname;
+      state.avatar = avatar;
+      state.success = success;
+      toast.success('유저 정보 불러오기');
+    },
+    [__getUser.rejected]: (state, action) => {
+      state.success = false;
+      state.isLoading = false;
+      state.isError = true;
+      state.error = action.payload.error;
+      toast.error(action.payload.errorMessage);
     },
   },
 });

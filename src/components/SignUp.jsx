@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { ToastContainer } from 'react-toastify';
@@ -16,15 +16,22 @@ function SignUp({ setMode }) {
     (state) => state.auth
   );
 
-  useEffect(() => {
-    if (isLoggedIn) navigate('/');
-  }, [isLoggedIn]);
+  // useEffect(() => {
+  //   if (isLoggedIn) navigate('/');
+  // }, [isLoggedIn]);
   const dispatch = useDispatch();
-  console.log(isLoggedIn);
+  // console.log(isLoggedIn);
   const onSignUpBtnClickHandler = (e) => {
     e.preventDefault();
-    dispatch(__signUp({ idValue, passwordValue, nicknameValue }));
+    dispatch(
+      __signUp({
+        id: idValue,
+        password: passwordValue,
+        nickname: nicknameValue,
+      })
+    );
   };
+
   const onGotoSignInBtnClickHandler = () => {
     setMode('signin');
   };
@@ -44,6 +51,7 @@ function SignUp({ setMode }) {
         break;
     }
   };
+
   return (
     <StFormContainer>
       <h1>회원가입</h1>

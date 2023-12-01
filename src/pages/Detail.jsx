@@ -15,6 +15,7 @@ const TEXTAREA_LENGTH_LIMIT = 100;
 function Detail() {
   const [textareaValue, setTextareaValue] = useState('');
   const { letters, isEditing } = useSelector((state) => state.letters);
+  const { userId, nickname } = useSelector((state) => state.auth);
   const dispatch = useDispatch();
   const params = useParams();
   const navigate = useNavigate();
@@ -40,7 +41,7 @@ function Detail() {
   }, [letters]);
 
   const selectedId = params.id;
-  console.log(params.id);
+  console.log(userId, nickname);
   const selectedLetter = {
     ...letters.find((letter) => letter.id === selectedId),
   };
