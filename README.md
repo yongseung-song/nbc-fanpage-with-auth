@@ -2,7 +2,7 @@
 
 ## Description
 
-내일배움캠프 React 트랙 개인과제인 팬페터 페이지 만들기의 레포지토리입니다.
+팬레터 페이지에 auth와 profile 기능을 추가한 팬레터 페이지 만들기의 레포지토리입니다.
 
 ### Features
 
@@ -12,42 +12,65 @@
 
 ### Dependencies
 
-- `dayjs`
+- `react`
 - `react-router-dom`
 - `redux`
 - `react-redux`
+- `reduxjs/toolkit`
+- `json-server`
+- `react-toastify`
 - `styled-components`
+- `styled-reset`
 - `uuid`
+- `dayjs`
 
 ### File tree
 
 ```
 📦src
-┣ 📂assets
-┣ 📂components
-┃ ┣ 📜Footer.jsx
-┃ ┣ 📜Header.jsx
-┃ ┣ 📜Letter.jsx
-┃ ┣ 📜LetterForm.jsx
-┃ ┗ 📜LetterList.jsx
-┣ 📂pages
-┃ ┣ 📜Detail.jsx
-┃ ┗ 📜Home.jsx
-┣ 📂redux
-┃ ┣ 📂config
-┃ ┃ ┗ 📜configStore.js
-┃ ┗ 📂modules
-┃ ┃ ┣ 📜letters.js
-┃ ┃ ┗ 📜member.js
-┣ 📂shared
-┃ ┣ 📜Router.jsx
-┃ ┗ 📜data.js
-┣ 📜App.css
-┣ 📜App.js
-┣ 📜App.test.js
-┣ 📜GlobalStyle.jsx
-┣ 📜index.css
-┗ 📜index.js
+ ┣ 📂assets
+ ┃ ┣ 📜avatar.jpg
+ ┃ ┣ 📜bannerBg.png
+ ┃ ┣ 📜bannerLogo.png
+ ┃ ┣ 📜bgbottom.png
+ ┃ ┗ 📜bgwall.png
+ ┣ 📂components
+ ┃ ┣ 📂common
+ ┃ ┃ ┗ 📜InputDiv.jsx
+ ┃ ┣ 📂layout
+ ┃ ┃ ┗ 📜Layout.jsx
+ ┃ ┣ 📜Footer.jsx
+ ┃ ┣ 📜Header.jsx
+ ┃ ┣ 📜Letter.jsx
+ ┃ ┣ 📜LetterForm.jsx
+ ┃ ┣ 📜LetterList.jsx
+ ┃ ┣ 📜SignIn.jsx
+ ┃ ┗ 📜SignUp.jsx
+ ┣ 📂pages
+ ┃ ┣ 📜Detail.jsx
+ ┃ ┣ 📜Home.jsx
+ ┃ ┣ 📜Login.jsx
+ ┃ ┣ 📜NotFound.jsx
+ ┃ ┗ 📜Profile.jsx
+ ┣ 📂redux
+ ┃ ┣ 📂config
+ ┃ ┃ ┗ 📜configStore.js
+ ┃ ┗ 📂modules
+ ┃ ┃ ┣ 📜authSlice.js
+ ┃ ┃ ┣ 📜lettersSlice.js
+ ┃ ┃ ┗ 📜membersSlice.js
+ ┣ 📂shared
+ ┃ ┣ 📜Router.jsx
+ ┃ ┗ 📜data.js
+ ┣ 📜App.css
+ ┣ 📜App.js
+ ┣ 📜App.test.js
+ ┣ 📜GlobalStyle.jsx
+ ┣ 📜index.css
+ ┣ 📜index.js
+ ┣ 📜logo.svg
+ ┣ 📜reportWebVitals.js
+ ┗ 📜setupTests.js
 ```
 
 ### Usage
