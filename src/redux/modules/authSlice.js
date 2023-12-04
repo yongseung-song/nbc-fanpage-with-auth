@@ -11,8 +11,18 @@ const initialState = {
   isValidToken: false,
   error: null,
 
-  userLoading: false,
-  userError: null,
+  getUser: {
+    isLoading: false,
+    isError: false,
+  },
+  signUp: {
+    isLoading: false,
+    isError: false,
+  },
+  signIn: {
+    isLoading: false,
+    isError: false,
+  },
 
   signUpLoading: false,
   signUpError: null,
@@ -49,7 +59,7 @@ export const __signIn = createAsyncThunk(
   async ({ id, password }, thunkAPI) => {
     try {
       const response = await axios.post(
-        `${process.env.REACT_APP_JWT_URL}/login?expiresIn=15s`,
+        `${process.env.REACT_APP_JWT_URL}/login?expiresIn=2m`,
         {
           id,
           password,
@@ -98,55 +108,54 @@ const authSlice = createSlice({
   },
   extraReducers: {
     [__signUp.pending]: (state, action) => {
-      state.signUpLoading = true;
-      state.signUpError = false;
+      state.signUp.isLoading = true;
+      state.signUp.isError = false;
     },
     [__signUp.fulfilled]: (state, action) => {
       state.success = action.payload.success;
-      state.signUpLoading = false;
-      state.signUpError = false;
+      state.signUp.isLoading = false;
+      state.signUp.isError = false;
       toast.success('회원가입 성공!');
     },
     [__signUp.rejected]: (state, action) => {
       state.success = false;
-      state.signUpLoading = false;
-      // 임시방편
-      // console.log(action.payload.message);
-      state.signUpError = true;
+      state.signUp.isLoading = false;
+      state.signUp.isError = true;
       state.error = action.payload.error;
       toast.error(action.payload.errorMessage);
     },
     [__signIn.pending]: (state, action) => {
-      state.signInLoading = true;
-      state.signInError = false;
+      state.signIn.isLoading = true;
+      state.signIn.isError = false;
     },
     [__signIn.fulfilled]: (state, action) => {
       const { userId, nickname, accessToken } = action.payload;
-      localStorage.setItem('accessToken', JSON.stringify(accessToken));
+      // localStorage.setItem('accessToken', JSON.stringify(accessToken));
+      localStorage.setItem('accessToken', accessToken);
       state.success = action.payload.success;
       state.userId = userId;
       state.nickname = nickname;
       state.isLoggedIn = true;
-      state.signInLoading = false;
-      state.signInError = false;
-      // toast.success('로그인 성공');
+      state.signIn.isLoading = false;
+      state.signIn.isError = false;
+      toast.success('로그인 성공');
     },
     [__signIn.rejected]: (state, action) => {
       state.success = false;
-      state.signInLoading = false;
-      state.signInError = true;
+      state.signIn.isLoading = false;
+      state.signIn.isError = true;
       state.error = action.payload.error;
       toast.error(action.payload.errorMessage);
     },
     [__getUser.pending]: (state, action) => {
-      state.getUserLoading = true;
-      state.getUserError = false;
+      state.getUser.isLoading = true;
+      state.getUser.isError = false;
     },
     [__getUser.fulfilled]: (state, action) => {
       const { id: userId, nickname, avatar, success } = action.payload;
       state.isLoggedIn = true;
-      state.getUserLoading = false;
-      state.getUserError = false;
+      state.getUser.isLoading = false;
+      state.getUser.isError = false;
       state.userId = userId;
       state.nickname = nickname;
       state.avatar = avatar;
@@ -156,9 +165,8 @@ const authSlice = createSlice({
     [__getUser.rejected]: (state, action) => {
       state.isLoggedIn = false;
       state.success = false;
-      console.log(state.success);
-      state.getUserLoading = false;
-      state.getUserError = true;
+      state.getUser.isLoading = false;
+      state.getUser.isError = true;
       state.error = action.payload.error;
       state.isValidToken = false;
       localStorage.removeItem('accessToken');

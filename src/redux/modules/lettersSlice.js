@@ -5,7 +5,11 @@ import dayjs from 'dayjs';
 const initialState = {
   letters: [],
   isEditing: false,
-  deleteLetter: {
+  fetchLetters: {
+    isLoading: false,
+    isError: false,
+  },
+  addLetter: {
     isLoading: false,
     isError: false,
   },
@@ -13,15 +17,29 @@ const initialState = {
     isLoading: false,
     isError: false,
   },
-  fetchLetters: {
+  deleteLetter: {
     isLoading: false,
     isError: false,
   },
   error: '',
 };
 
+export const __fetchLetters = createAsyncThunk(
+  'fetchLetter',
+  async (payload, ThunkAPI) => {
+    try {
+      const response = await axios.get(
+        `${process.env.REACT_APP_JSON_SERVER_URL}/letters?_sort=views&_order=desc`
+      );
+      return ThunkAPI.fulfillWithValue(response.data);
+    } catch (error) {
+      return ThunkAPI.rejectWithValue(error);
+    }
+  }
+);
+
 export const __addLetter = createAsyncThunk(
-  'letterAdded',
+  'addLetter',
   async (
     { id, createdAt, nickname, content, writedTo, avatar, userId },
     ThunkAPI
@@ -46,12 +64,12 @@ export const __addLetter = createAsyncThunk(
   }
 );
 
-const __deleteLetter = createAsyncThunk(
-  'letterDeleted',
+export const __deleteLetter = createAsyncThunk(
+  'deleteLetter',
   async ({ selectedId }, ThunkAPI) => {
     try {
       const response = await axios.delete(
-        `${process.env.REACT_APP_JSON_SERVER_URL}/letters?id=${selectedId}`
+        `${process.env.REACT_APP_JSON_SERVER_URL}/letters/${selectedId}`
       );
 
       return ThunkAPI.fulfillWithValue(response);
@@ -89,20 +107,37 @@ const lettersSlice = createSlice({
     },
   },
   extraReducers: {
+    [__fetchLetters.pending]: (state, action) => {
+      state.fetchLetters.isLoading = true;
+      state.fetchLetters.isError = false;
+      console.log();
+    },
+    [__fetchLetters.fulfilled]: (state, action) => {
+      state.fetchLetters.isLoading = false;
+      state.fetchLetters.isError = false;
+      state.letters = action.payload;
+      console.log(action.payload);
+    },
+    [__fetchLetters.rejected]: (state, action) => {
+      state.fetchLetters.isLoading = false;
+      state.fetchLetters.isError = true;
+      state.error = action.payload;
+    },
     [__addLetter.pending]: (state, action) => {
       state.addLetter.isLoading = true;
       state.addLetter.isError = false;
-      // BUG 아마도 인터셉터의 영역인 것 같다
       // toast.loading('팬레터를 보내는 중입니다...');
     },
     [__addLetter.fulfilled]: (state, action) => {
       state.addLetter.isLoading = false;
       state.addLetter.isError = false;
+      state.letters = [action.payload, ...state.letters];
       console.log(action.payload.statusText);
     },
     [__addLetter.rejected]: (state, action) => {
       state.addLetter.isLoading = false;
       state.addLetter.isError = true;
+      state.error = action.payload.status;
       console.log(action.payload.statusText);
       console.error(action.payload.status);
     },

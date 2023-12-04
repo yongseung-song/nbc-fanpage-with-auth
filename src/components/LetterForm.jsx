@@ -18,9 +18,8 @@ function LetterForm() {
   const [textareaValue, setTextareaValue] = useState('');
   const { letters } = useSelector((state) => state.letters);
   const { selectedMember } = useSelector((state) => state.members);
-  const { userId, avatar, nickname, isLoggedIn, success } = useSelector(
-    (state) => state.auth
-  );
+  const { userId, avatar, nickname, isLoggedIn, getUser, success } =
+    useSelector((state) => state.auth);
   const dispatch = useDispatch();
   const accessToken = localStorage.getItem('accessToken');
 
@@ -35,6 +34,7 @@ function LetterForm() {
   console.log(isLoggedIn);
 
   const letterSubmitHandler = (e) => {
+    dispatch(__getUser(accessToken));
     e.preventDefault();
 
     if (textareaRef.current.value) {
@@ -47,10 +47,8 @@ function LetterForm() {
         userId,
         nickname,
       };
-      dispatch(__getUser(JSON.parse(accessToken)));
       dispatch(__addLetter(submittedLetter));
-      // dispatch(__addLetter(...submittedLetter));
-      // dispatch(letterAdded(submittedLetter));
+
       dispatch(setSelectedMember(selectRef.current.value));
 
       setTextareaValue('');

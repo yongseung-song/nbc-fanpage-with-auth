@@ -23,7 +23,7 @@ function SignIn({ setMode }) {
       return;
     }
     if (!isLoggedIn && accessToken) {
-      dispatch(__getUser(JSON.parse(accessToken)));
+      dispatch(__getUser(accessToken));
     }
   }, [isLoggedIn]);
 

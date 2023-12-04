@@ -2,9 +2,10 @@ import dayjs from 'dayjs';
 import { useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate, useParams } from 'react-router-dom';
+import { __getUser } from 'redux/modules/authSlice';
 import {
+  __deleteLetter,
   isEditMode,
-  letterDeleted,
   letterEdited,
   letterSet,
 } from 'redux/modules/lettersSlice';
@@ -20,6 +21,7 @@ function Detail() {
   const params = useParams();
   const navigate = useNavigate();
   const textareaRef = useRef();
+  const accessToken = localStorage.getItem('accessToken');
 
   useEffect(() => {
     if (!localStorage.getItem('letters') || Object.keys(params).length === 0) {
@@ -41,12 +43,12 @@ function Detail() {
   }, [letters]);
 
   const selectedId = params.id;
+  console.log(params.id);
+  console.log(letters);
   console.log(userId, nickname);
-  const selectedLetter = {
-    ...letters.find((letter) => letter.id === selectedId),
-  };
+  const selectedLetter = letters.find((letter) => letter.id === selectedId);
 
-  // console.log(selectedLetter);
+  console.log(selectedLetter);
 
   const textareaChangeHandler = (e) => {
     setTextareaValue(e.target.value);
@@ -71,8 +73,9 @@ function Detail() {
 
   const deleteBtnClickHandler = (e) => {
     if (window.confirm('정말 삭제하시겠습니까?')) {
-      dispatch(letterDeleted(selectedId));
-      setTimeout(() => navigate('/'), 0);
+      dispatch(__getUser(accessToken));
+      dispatch(__deleteLetter(selectedId));
+      navigate('/');
     }
   };
   const setEditedDate = () => {
@@ -158,6 +161,7 @@ export default Detail;
 const StBGContainer = styled.div`
   background-color: #e3e2ce;
   height: calc(100vh - 320px);
+  padding-top: 6px;
 `;
 
 const StDetailContainer = styled.div`
@@ -204,6 +208,8 @@ const StMaxLengthIndicator = styled.span`
 `;
 
 const StDetailInfoWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
   padding: 12px 0;
   gap: 6px;
   align-items: end;
@@ -230,7 +236,9 @@ const StDetailInfoWrapper = styled.div`
 `;
 
 const StBtnContainer = styled.div`
+  display: flex;
   flex-direction: row;
+  align-items: center;
   justify-content: center;
   gap: 12px;
   button {

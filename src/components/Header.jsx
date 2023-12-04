@@ -21,7 +21,7 @@ function Header() {
     dispatch(setSelectedMember(id));
   };
 
-  const homeButtonHandler = (e) => {
+  const gotoListsButtonHandler = (e) => {
     e.preventDefault();
     if (letters.isEditing) {
       if (
@@ -34,11 +34,15 @@ function Header() {
     }
   };
 
+  const gotoHomeButtonHandler = () => {
+    navigate('/');
+  };
+
   return (
     <>
       <StHeader>
         <StNavBar>
-          <button>Home</button>
+          <button onClick={gotoHomeButtonHandler}>Home</button>
           <div>
             <button>내 프로필</button>
             <button>로그아웃</button>
@@ -59,8 +63,11 @@ function Header() {
               );
             })
           ) : (
-            <StMemberSelectBtn $isSelected="true" onClick={homeButtonHandler}>
-              홈페이지로
+            <StMemberSelectBtn
+              $isSelected="true"
+              onClick={gotoListsButtonHandler}
+            >
+              목록 보기
             </StMemberSelectBtn>
           )}
         </StMemberSelectBtnContainer>
@@ -105,6 +112,7 @@ const StNavBar = styled.nav`
     font-size: 1rem;
     font-weight: 700;
     box-shadow: 0 0 4px #555f;
+    cursor: pointer;
   }
 `;
 const StMemberSelectBtnContainer = styled.div`

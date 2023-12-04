@@ -1,4 +1,3 @@
-import dayjs from 'dayjs';
 import { useSelector } from 'react-redux';
 import styled from 'styled-components';
 import Letter from './Letter';
@@ -7,10 +6,11 @@ function LetterList() {
   const { letters } = useSelector((state) => state.letters);
   const { selectedMember } = useSelector((state) => state.members);
 
-  const filteredLettersInDescendingOrder = letters
-    ?.filter((letter) => letter.writedTo === selectedMember)
-    .sort((a, b) => dayjs(b.createdAt) - dayjs(a.createdAt));
-  console.log('rerendered');
+  const filteredLettersInDescendingOrder = letters?.filter(
+    (letter) => letter.writedTo === selectedMember
+  );
+  // .sort((a, b) => dayjs(b.createdAt) - dayjs(a.createdAt));
+  // console.log('rerendered');
   return (
     <StLetterListContainer>
       <ul>
