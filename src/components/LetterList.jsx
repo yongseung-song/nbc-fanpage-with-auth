@@ -2,6 +2,34 @@ import { useSelector } from 'react-redux';
 import styled from 'styled-components';
 import Letter from './Letter';
 
+function LetterList() {
+  const { letters } = useSelector((state) => state.letters);
+  const { selectedMember } = useSelector((state) => state.members);
+
+  const filteredLettersInDescendingOrder = letters?.filter(
+    (letter) => letter.writedTo === selectedMember
+  );
+  // .sort((a, b) => dayjs(b.createdAt) - dayjs(a.createdAt));
+  // console.log('rerendered');
+  return (
+    <StLetterListContainer>
+      <ul>
+        {filteredLettersInDescendingOrder.length ? (
+          filteredLettersInDescendingOrder.map((letter) => {
+            return <Letter key={letter.id} letter={letter} />;
+          })
+        ) : (
+          <StEmptyListContainer>
+            <p>{selectedMember}에게 남겨진 팬레터가 없습니다.</p>
+          </StEmptyListContainer>
+        )}
+      </ul>
+    </StLetterListContainer>
+  );
+}
+
+export default LetterList;
+
 const StLetterListContainer = styled.div`
   width: 100%;
   display: flex;
@@ -22,33 +50,3 @@ const StEmptyListContainer = styled.div`
     text-align: center;
   }
 `;
-
-function LetterList() {
-  const letters = useSelector((state) => state.letters);
-  const members = useSelector((state) => state.members);
-
-  const letterEntries = Object.entries(letters.letters).reverse();
-  const filterLetters = () => {
-    return letterEntries.filter(
-      (letter) => letter[1].writedTo === members.selectedMember
-    );
-  };
-
-  return (
-    <StLetterListContainer>
-      <ul>
-        {filterLetters().length ? (
-          filterLetters().map((item) => {
-            return <Letter key={item[0]} letter={item[1]} />;
-          })
-        ) : (
-          <StEmptyListContainer>
-            <p>{members.selectedMember}에게 남겨진 팬레터가 없습니다.</p>
-          </StEmptyListContainer>
-        )}
-      </ul>
-    </StLetterListContainer>
-  );
-}
-
-export default LetterList;

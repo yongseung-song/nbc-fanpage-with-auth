@@ -2,40 +2,26 @@ import LetterForm from 'components/LetterForm';
 import LetterList from 'components/LetterList';
 import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { addLetters, setLetters } from 'redux/modules/letters';
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/ReactToastify.min.css';
+import { __fetchLetters } from 'redux/modules/lettersSlice';
 import styled from 'styled-components';
 import bgBottom from '../assets/bgbottom.png';
 import bgWall from '../assets/bgwall.png';
 
-export const members = ['이장원', '신재평'];
-export const membersMap = new Map(members.entries());
-
 function Home() {
-  const letters = useSelector((state) => state.letters);
+  const { letters } = useSelector((state) => state.letters);
+  const { isLoggedIn } = useSelector((state) => state.auth);
+  // console.log(userId, nickname);
   const dispatch = useDispatch();
 
   useEffect(() => {
-    // localStorage의 "letters" 키에 데이터가 없을때
-    if (!localStorage.getItem('letters')) {
-      fetch('fakeData.json')
-        .then((res) => res.json())
-        .then((result) =>
-          result.forEach((item) => {
-            dispatch(addLetters(item));
-          })
-        );
-      const stringifiedLetterMap = JSON.stringify(letters.letters);
-      localStorage.setItem('letters', stringifiedLetterMap);
-    } else {
-      const storageData = JSON.parse(localStorage.getItem('letters'));
-      dispatch(setLetters(storageData));
-    }
+    dispatch(__fetchLetters());
   }, []);
 
-  useEffect(() => {
-    const stringifiedLetterMap = JSON.stringify(letters.letters);
-    localStorage.setItem('letters', stringifiedLetterMap);
-  }, [letters.letters]);
+  // useEffect(() => {
+  //   dispatch(__fetchLetters());
+  // }, [letters]);
 
   return (
     <div>
@@ -44,6 +30,7 @@ function Home() {
           <LetterForm />
           <LetterList />
         </StLetterContainer>
+        <ToastContainer />
       </StBGContainer>
     </div>
   );
@@ -56,6 +43,7 @@ const StBGContainer = styled.div`
   background-position: calc(50% + 300px) calc(100% + 20px),
     calc(50% - 335px) 50%;
   background-size: 400px auto, 300px auto, 100% auto;
+  padding-top: 12px;
 `;
 const StLetterContainer = styled.div`
   height: calc(100vh - 332px);
@@ -63,4 +51,6 @@ const StLetterContainer = styled.div`
   min-width: 200px;
   width: 480px;
   padding-bottom: 28px;
+  display: flex;
+  flex-direction: column;
 `;

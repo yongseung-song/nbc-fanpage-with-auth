@@ -1,6 +1,5 @@
-import React from "react";
-import bannerBg from "../assets/bannerBg.png";
-import styled from "styled-components";
+import styled from 'styled-components';
+import bannerBg from '../assets/bannerBg.png';
 
 const StFooter = styled.footer`
   background-image: url(${bannerBg});
@@ -20,7 +19,6 @@ const StFooter = styled.footer`
 function Footer() {
   return (
     <StFooter>
-      {/* <p>노래하라!</p> */}
       <p>Copyright ©2023 Yongseung Song.</p>
     </StFooter>
   );

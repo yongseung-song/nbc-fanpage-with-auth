@@ -1,80 +1,74 @@
 import dayjs from 'dayjs';
 import { useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { addLetters } from 'redux/modules/letters';
-import { setSelectedMember } from 'redux/modules/members';
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/ReactToastify.min.css';
+import { __getUser } from 'redux/modules/authSlice';
+import { __addLetter } from 'redux/modules/lettersSlice';
+import { setSelectedMember } from 'redux/modules/membersSlice';
 import styled from 'styled-components';
 import { v4 as uuid } from 'uuid';
 import defaultAvatar from '../assets/avatar.jpg';
 
-const NICKNAME_LIMIT = 20;
 const CONTENT_LIMIT = 100;
 const BORDER_COLOR = '#0008';
 const BACKGROUND_COLOR = '#feffd0bf';
 
 function LetterForm() {
   const [textareaValue, setTextareaValue] = useState('');
-  const [inputValue, setInputValue] = useState('');
-  const letters = useSelector((state) => state.letters);
-  const member = useSelector((state) => state.members);
+  const { letters } = useSelector((state) => state.letters);
+  const { selectedMember } = useSelector((state) => state.members);
+  const { userId, avatar, nickname, isLoggedIn, getUser, success } =
+    useSelector((state) => state.auth);
   const dispatch = useDispatch();
+  const accessToken = localStorage.getItem('accessToken');
 
   const inputRef = useRef();
   const textareaRef = useRef();
   const selectRef = useRef();
 
   useEffect(() => {
-    inputRef.current.focus();
-  }, [member.selectedMember, letters.letters]);
+    textareaRef.current.focus();
+  }, [selectedMember, letters]);
+
+  console.log(isLoggedIn);
 
   const letterSubmitHandler = (e) => {
+    dispatch(__getUser(accessToken));
     e.preventDefault();
 
-    if (inputRef.current.value && textareaRef.current.value) {
+    if (textareaRef.current.value) {
       const submittedLetter = {
         id: uuid(),
         createdAt: dayjs().toJSON(),
-        nickname: inputRef.current.value,
         content: textareaRef.current.value,
         writedTo: selectRef.current.value,
-        avatar: defaultAvatar,
+        avatar: avatar ?? defaultAvatar,
+        userId,
+        nickname,
       };
+      dispatch(__addLetter(submittedLetter));
 
-      dispatch(addLetters(submittedLetter));
       dispatch(setSelectedMember(selectRef.current.value));
 
       setTextareaValue('');
-      setInputValue('');
     } else {
       alert('닉네임과 내용을 입력해주세요.');
     }
   };
 
-  const textChangeHandler = () => {
+  const onTextareaChangeHandler = () => {
     setTextareaValue(textareaRef.current.value);
-    setInputValue(inputRef.current.value);
   };
+  const onSelectChangeHandler = () => {};
 
   return (
     <StLetterFormContainer>
+      <StNicknameContainer>
+        <dt>닉네임 :</dt>
+        <dd>{nickname}</dd>
+      </StNicknameContainer>
       <form action="">
-        <StInputContainer>
-          <label htmlFor="text">닉네임 :</label>
-          <input
-            ref={inputRef}
-            required
-            value={inputValue}
-            autoFocus
-            autoComplete="off"
-            id="text"
-            type="text"
-            maxLength={NICKNAME_LIMIT}
-            onChange={textChangeHandler}
-          />
-          <StMaxLengthIndicator $isMax={inputValue.length < NICKNAME_LIMIT}>
-            {inputValue.length}/{NICKNAME_LIMIT}
-          </StMaxLengthIndicator>
-        </StInputContainer>
         <StInputContainer>
           <label htmlFor="textarea">내용 :</label>
           <textarea
@@ -86,7 +80,7 @@ function LetterForm() {
             name="textarea"
             rows={4}
             maxLength={CONTENT_LIMIT}
-            onChange={textChangeHandler}
+            onChange={onTextareaChangeHandler}
           />
           <StMaxLengthIndicator $isMax={textareaValue.length < CONTENT_LIMIT}>
             {textareaValue.length}/{CONTENT_LIMIT}
@@ -97,8 +91,9 @@ function LetterForm() {
           <select
             ref={selectRef}
             id="member-select"
-            value={member.selectedMember}
+            value={selectedMember}
             name="member-select"
+            onChange={onSelectChangeHandler}
           >
             <option value="이장원">이장원</option>
             <option value="신재평">신재평</option>
@@ -107,12 +102,14 @@ function LetterForm() {
         <StBtnContainer>
           <StSubmitBtn onClick={letterSubmitHandler}>팬레터 등록</StSubmitBtn>
         </StBtnContainer>
+        <ToastContainer />
       </form>
     </StLetterFormContainer>
   );
 }
 
 export default LetterForm;
+
 const StLetterFormContainer = styled.div`
   min-width: 200px;
   max-width: 520px;
@@ -122,6 +119,18 @@ const StLetterFormContainer = styled.div`
   border: 1px solid ${BORDER_COLOR};
   border-radius: 12px;
   background-color: white;
+`;
+
+const StNicknameContainer = styled.dl`
+  display: flex;
+  gap: 8px;
+  font-size: 0.8rem;
+  margin-bottom: 12px;
+  dd {
+    text-decoration: underline #0003;
+    text-underline-offset: 3px;
+    font-weight: 700;
+  }
 `;
 
 const StInputContainer = styled.div`
@@ -136,6 +145,7 @@ const StInputContainer = styled.div`
     padding-top: 6px;
   }
   input {
+    width: 89%;
     padding: 4px 2px;
     border: 1px solid ${BORDER_COLOR};
   }
