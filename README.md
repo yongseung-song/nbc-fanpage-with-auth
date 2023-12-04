@@ -1,4 +1,4 @@
-# Peppertones fan page
+# Peppertones fan page with auth and profile
 
 ## Description
 
@@ -6,9 +6,11 @@
 
 ### Features
 
+- State management using Redux
+- Asynchronous networking with server using redux thunk
 - Write letters to the members of a band
-- Perform CRUD operations on each letter
-- List of letters is preserved on refresh
+- Perform CRD operations on each letter, currently working on Updating letters
+- List of letters are fetched via json-server
 
 ### Dependencies
 
