@@ -1,6 +1,5 @@
 import { useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { useNavigate } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/ReactToastify.min.css';
 import { __signUp } from 'redux/modules/authSlice';
@@ -10,17 +9,8 @@ function SignUp({ setMode }) {
   const [idValue, setIdValue] = useState('');
   const [passwordValue, setPasswordValue] = useState('');
   const [nicknameValue, setNickNameValue] = useState('');
-  const [isValid, setIsValid] = useState('');
-  const navigate = useNavigate();
-  const { success, message, isError, isLoggedIn, error } = useSelector(
-    (state) => state.auth
-  );
 
-  // useEffect(() => {
-  //   if (isLoggedIn) navigate('/');
-  // }, [isLoggedIn]);
   const dispatch = useDispatch();
-  // console.log(isLoggedIn);
   const onSignUpBtnClickHandler = (e) => {
     e.preventDefault();
     dispatch(

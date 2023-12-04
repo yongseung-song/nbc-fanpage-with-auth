@@ -9,8 +9,6 @@ function LetterList() {
   const filteredLettersInDescendingOrder = letters?.filter(
     (letter) => letter.writedTo === selectedMember
   );
-  // .sort((a, b) => dayjs(b.createdAt) - dayjs(a.createdAt));
-  // console.log('rerendered');
   return (
     <StLetterListContainer>
       <ul>

@@ -24,7 +24,7 @@ function Detail() {
   const accessToken = localStorage.getItem('accessToken');
 
   useEffect(() => {
-    if (!localStorage.getItem('letters') || Object.keys(params).length === 0) {
+    if (Object.keys(params).length === 0) {
       alert('올바르지 않은 접근입니다. 홈 페이지로 이동합니다.');
       navigate('/');
     } else {
@@ -43,12 +43,7 @@ function Detail() {
   }, [letters]);
 
   const selectedId = params.id;
-  console.log(params.id);
-  console.log(letters);
-  console.log(userId, nickname);
   const selectedLetter = letters.find((letter) => letter.id === selectedId);
-
-  console.log(selectedLetter);
 
   const textareaChangeHandler = (e) => {
     setTextareaValue(e.target.value);

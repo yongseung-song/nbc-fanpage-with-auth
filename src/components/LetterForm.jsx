@@ -18,20 +18,16 @@ function LetterForm() {
   const [textareaValue, setTextareaValue] = useState('');
   const { letters } = useSelector((state) => state.letters);
   const { selectedMember } = useSelector((state) => state.members);
-  const { userId, avatar, nickname, isLoggedIn, getUser, success } =
-    useSelector((state) => state.auth);
+  const { userId, avatar, nickname } = useSelector((state) => state.auth);
   const dispatch = useDispatch();
   const accessToken = localStorage.getItem('accessToken');
 
-  const inputRef = useRef();
   const textareaRef = useRef();
   const selectRef = useRef();
 
   useEffect(() => {
     textareaRef.current.focus();
   }, [selectedMember, letters]);
-
-  console.log(isLoggedIn);
 
   const letterSubmitHandler = (e) => {
     dispatch(__getUser(accessToken));

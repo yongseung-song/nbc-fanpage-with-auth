@@ -12,7 +12,6 @@ import bgWall from '../assets/bgwall.png';
 function Home() {
   const { letters } = useSelector((state) => state.letters);
   const { isLoggedIn } = useSelector((state) => state.auth);
-  // console.log(userId, nickname);
   const dispatch = useDispatch();
 
   useEffect(() => {

@@ -130,7 +130,6 @@ const authSlice = createSlice({
     },
     [__signIn.fulfilled]: (state, action) => {
       const { userId, nickname, accessToken } = action.payload;
-      // localStorage.setItem('accessToken', JSON.stringify(accessToken));
       localStorage.setItem('accessToken', accessToken);
       state.success = action.payload.success;
       state.userId = userId;

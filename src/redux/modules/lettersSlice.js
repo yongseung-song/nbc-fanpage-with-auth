@@ -1,6 +1,7 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import axios from 'axios';
 import dayjs from 'dayjs';
+import { toast } from 'react-toastify';
 
 const initialState = {
   letters: [],
@@ -110,13 +111,11 @@ const lettersSlice = createSlice({
     [__fetchLetters.pending]: (state, action) => {
       state.fetchLetters.isLoading = true;
       state.fetchLetters.isError = false;
-      console.log();
     },
     [__fetchLetters.fulfilled]: (state, action) => {
       state.fetchLetters.isLoading = false;
       state.fetchLetters.isError = false;
       state.letters = action.payload;
-      console.log(action.payload);
     },
     [__fetchLetters.rejected]: (state, action) => {
       state.fetchLetters.isLoading = false;
@@ -126,20 +125,17 @@ const lettersSlice = createSlice({
     [__addLetter.pending]: (state, action) => {
       state.addLetter.isLoading = true;
       state.addLetter.isError = false;
-      // toast.loading('팬레터를 보내는 중입니다...');
+      toast.loading('팬레터를 보내는 중입니다...');
     },
     [__addLetter.fulfilled]: (state, action) => {
       state.addLetter.isLoading = false;
       state.addLetter.isError = false;
       state.letters = [action.payload, ...state.letters];
-      console.log(action.payload.statusText);
     },
     [__addLetter.rejected]: (state, action) => {
       state.addLetter.isLoading = false;
       state.addLetter.isError = true;
       state.error = action.payload.status;
-      console.log(action.payload.statusText);
-      console.error(action.payload.status);
     },
     [__deleteLetter.pending]: (state, action) => {
       state.deleteLetter.isLoading = true;
@@ -148,13 +144,10 @@ const lettersSlice = createSlice({
     [__deleteLetter.fulfilled]: (state, action) => {
       state.deleteLetter.isLoading = false;
       state.deleteLetter.isError = false;
-      console.log(action.payload.statusText);
     },
     [__deleteLetter.rejected]: (state, action) => {
       state.deleteLetter.isLoading = false;
       state.deleteLetter.isError = true;
-      console.log(action.payload.statusText);
-      console.error(action.payload.status);
     },
   },
 });
