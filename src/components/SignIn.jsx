@@ -21,10 +21,8 @@ function SignIn({ setMode }) {
     if (isLoggedIn) {
       navigate('/');
       return;
-      console.log('?n');
     }
-    if (accessToken) {
-      console.log('?g');
+    if (!isLoggedIn && accessToken) {
       dispatch(__getUser(JSON.parse(accessToken)));
     }
   }, [isLoggedIn]);

@@ -1,24 +1,28 @@
 import dayjs from 'dayjs';
 import { useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { letterAdded } from 'redux/modules/lettersSlice';
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/ReactToastify.min.css';
+import { __getUser } from 'redux/modules/authSlice';
+import { __addLetter } from 'redux/modules/lettersSlice';
 import { setSelectedMember } from 'redux/modules/membersSlice';
 import styled from 'styled-components';
 import { v4 as uuid } from 'uuid';
 import defaultAvatar from '../assets/avatar.jpg';
 
-const NICKNAME_LIMIT = 20;
 const CONTENT_LIMIT = 100;
 const BORDER_COLOR = '#0008';
 const BACKGROUND_COLOR = '#feffd0bf';
 
 function LetterForm() {
   const [textareaValue, setTextareaValue] = useState('');
-  const [inputValue, setInputValue] = useState('');
   const { letters } = useSelector((state) => state.letters);
   const { selectedMember } = useSelector((state) => state.members);
-  const { userId, avatar, nickname } = useSelector((state) => state.auth);
+  const { userId, avatar, nickname, isLoggedIn, success } = useSelector(
+    (state) => state.auth
+  );
   const dispatch = useDispatch();
+  const accessToken = localStorage.getItem('accessToken');
 
   const inputRef = useRef();
   const textareaRef = useRef();
@@ -28,24 +32,28 @@ function LetterForm() {
     textareaRef.current.focus();
   }, [selectedMember, letters]);
 
+  console.log(isLoggedIn);
+
   const letterSubmitHandler = (e) => {
     e.preventDefault();
 
-    if (inputRef.current.value && textareaRef.current.value) {
+    if (textareaRef.current.value) {
       const submittedLetter = {
         id: uuid(),
         createdAt: dayjs().toJSON(),
-        nickname: inputRef.current.value,
         content: textareaRef.current.value,
         writedTo: selectRef.current.value,
-        avatar: defaultAvatar,
+        avatar: avatar ?? defaultAvatar,
+        userId,
+        nickname,
       };
-
-      dispatch(letterAdded(submittedLetter));
+      dispatch(__getUser(JSON.parse(accessToken)));
+      dispatch(__addLetter(submittedLetter));
+      // dispatch(__addLetter(...submittedLetter));
+      // dispatch(letterAdded(submittedLetter));
       dispatch(setSelectedMember(selectRef.current.value));
 
       setTextareaValue('');
-      setInputValue('');
     } else {
       alert('닉네임과 내용을 입력해주세요.');
     }
@@ -96,6 +104,7 @@ function LetterForm() {
         <StBtnContainer>
           <StSubmitBtn onClick={letterSubmitHandler}>팬레터 등록</StSubmitBtn>
         </StBtnContainer>
+        <ToastContainer />
       </form>
     </StLetterFormContainer>
   );

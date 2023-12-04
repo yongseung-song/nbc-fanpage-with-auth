@@ -30,6 +30,7 @@ function SignUp({ setMode }) {
         nickname: nicknameValue,
       })
     );
+    setMode('signin');
   };
 
   const onGotoSignInBtnClickHandler = () => {

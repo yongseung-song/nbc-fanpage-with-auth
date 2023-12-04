@@ -3,16 +3,22 @@ import axios from 'axios';
 import { toast } from 'react-toastify';
 
 const initialState = {
-  accessToken: '',
   userId: '',
-  success: false,
   avatar: '',
   nickname: '',
   message: '',
-  isLoggedIn: false,
-  isLoading: false,
-  isError: false,
+  accessToken: '',
+  isValidToken: false,
   error: null,
+
+  userLoading: false,
+  userError: null,
+
+  signUpLoading: false,
+  signUpError: null,
+
+  signInLoading: false,
+  signInError: null,
 };
 
 export const __signUp = createAsyncThunk(
@@ -43,7 +49,7 @@ export const __signIn = createAsyncThunk(
   async ({ id, password }, thunkAPI) => {
     try {
       const response = await axios.post(
-        `${process.env.REACT_APP_JWT_URL}/login?expiresIn=10s`,
+        `${process.env.REACT_APP_JWT_URL}/login?expiresIn=15s`,
         {
           id,
           password,
@@ -92,27 +98,27 @@ const authSlice = createSlice({
   },
   extraReducers: {
     [__signUp.pending]: (state, action) => {
-      state.isLoading = true;
-      state.isError = false;
+      state.signUpLoading = true;
+      state.signUpError = false;
     },
     [__signUp.fulfilled]: (state, action) => {
       state.success = action.payload.success;
-      state.isLoading = false;
-      state.isError = false;
+      state.signUpLoading = false;
+      state.signUpError = false;
       toast.success('회원가입 성공!');
     },
     [__signUp.rejected]: (state, action) => {
       state.success = false;
-      state.isLoading = false;
+      state.signUpLoading = false;
       // 임시방편
       // console.log(action.payload.message);
-      state.isError = true;
+      state.signUpError = true;
       state.error = action.payload.error;
       toast.error(action.payload.errorMessage);
     },
     [__signIn.pending]: (state, action) => {
-      state.isLoading = true;
-      state.isError = false;
+      state.signInLoading = true;
+      state.signInError = false;
     },
     [__signIn.fulfilled]: (state, action) => {
       const { userId, nickname, accessToken } = action.payload;
@@ -121,37 +127,41 @@ const authSlice = createSlice({
       state.userId = userId;
       state.nickname = nickname;
       state.isLoggedIn = true;
-      state.isLoading = false;
-      state.isError = false;
-      toast.success('로그인 성공');
+      state.signInLoading = false;
+      state.signInError = false;
+      // toast.success('로그인 성공');
     },
     [__signIn.rejected]: (state, action) => {
       state.success = false;
-      state.isLoading = false;
-      state.isError = true;
+      state.signInLoading = false;
+      state.signInError = true;
       state.error = action.payload.error;
       toast.error(action.payload.errorMessage);
     },
     [__getUser.pending]: (state, action) => {
-      state.isLoading = true;
-      state.isError = false;
+      state.getUserLoading = true;
+      state.getUserError = false;
     },
     [__getUser.fulfilled]: (state, action) => {
       const { id: userId, nickname, avatar, success } = action.payload;
       state.isLoggedIn = true;
-      state.isLoading = false;
-      state.isError = false;
+      state.getUserLoading = false;
+      state.getUserError = false;
       state.userId = userId;
       state.nickname = nickname;
       state.avatar = avatar;
       state.success = success;
-      toast.success('유저 정보 불러오기');
+      // toast.success('유저 정보 불러오기');
     },
     [__getUser.rejected]: (state, action) => {
+      state.isLoggedIn = false;
       state.success = false;
-      state.isLoading = false;
-      state.isError = true;
+      console.log(state.success);
+      state.getUserLoading = false;
+      state.getUserError = true;
       state.error = action.payload.error;
+      state.isValidToken = false;
+      localStorage.removeItem('accessToken');
       toast.error(action.payload.errorMessage);
     },
   },

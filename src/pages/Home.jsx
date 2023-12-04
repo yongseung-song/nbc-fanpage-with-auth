@@ -2,6 +2,8 @@ import LetterForm from 'components/LetterForm';
 import LetterList from 'components/LetterList';
 import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/ReactToastify.min.css';
 import { letterSet } from 'redux/modules/lettersSlice';
 import styled from 'styled-components';
 import bgBottom from '../assets/bgbottom.png';
@@ -14,6 +16,7 @@ function Home() {
   const dispatch = useDispatch();
 
   useEffect(() => {
+    if (isLoggedIn) toast.success('로그인 성공!');
     // localStorage의 "letters" 키에 데이터가 없을때
     if (!localStorage.getItem('letters')) {
       fetch('fakeData.json')
@@ -40,6 +43,7 @@ function Home() {
           <LetterForm />
           <LetterList />
         </StLetterContainer>
+        <ToastContainer />
       </StBGContainer>
     </div>
   );
